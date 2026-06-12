@@ -4,19 +4,26 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>诺娃剪辑 — 简洁强大的录屏工具</title>
+
+  <!-- Favicon -->
+  <link rel="icon" type="image/png" href="favicon.png">
+  <link rel="shortcut icon" href="favicon.ico">
+  <link rel="apple-touch-icon" href="icon.png">
+
   <style>
     *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 
     :root {
-      --bg:        #0f0f1a;
-      --bg2:       #1a1a2e;
-      --bg3:       #2d1b4e;
-      --accent:    #a78bfa;
-      --accent2:   #7c3aed;
-      --text:      #e2e8f0;
-      --text2:     #9ca3af;
-      --border:    rgba(255,255,255,0.08);
-      --glass:     rgba(255,255,255,0.05);
+      --purple:     #7c3aed;
+      --purple-lt:  #a78bfa;
+      --purple-bg:  #f3f0ff;
+      --purple-mid: #ede9fe;
+      --text:       #111827;
+      --text2:      #6b7280;
+      --text3:      #9ca3af;
+      --border:     #e5e7eb;
+      --bg:         #ffffff;
+      --bg2:        #f9fafb;
     }
 
     html { scroll-behavior: smooth; }
@@ -24,132 +31,195 @@
     body {
       background: var(--bg);
       color: var(--text);
-      font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC',
+                   'Hiragino Sans GB', system-ui, sans-serif;
       line-height: 1.6;
       overflow-x: hidden;
+      -webkit-font-smoothing: antialiased;
     }
 
     /* ── Nav ── */
     nav {
       position: fixed; top: 0; left: 0; right: 0; z-index: 100;
       display: flex; align-items: center; justify-content: space-between;
-      padding: 0 40px; height: 60px;
-      background: rgba(15,15,26,0.85);
+      padding: 0 48px; height: 64px;
+      background: rgba(255,255,255,0.88);
       backdrop-filter: blur(20px);
+      -webkit-backdrop-filter: blur(20px);
       border-bottom: 1px solid var(--border);
     }
     .nav-logo {
       display: flex; align-items: center; gap: 10px;
-      font-size: 16px; font-weight: 600; color: var(--accent);
-      text-decoration: none;
+      font-size: 16px; font-weight: 700; color: var(--text);
+      text-decoration: none; letter-spacing: -0.3px;
     }
-    .nav-logo img { width: 28px; height: 28px; border-radius: 6px; }
-    .nav-links { display: flex; gap: 32px; }
+    .nav-logo img {
+      width: 30px; height: 30px; border-radius: 8px;
+      box-shadow: 0 2px 8px rgba(124,58,237,0.25);
+    }
+    .nav-links { display: flex; gap: 36px; align-items: center; }
     .nav-links a {
       color: var(--text2); text-decoration: none; font-size: 14px;
-      transition: color .2s;
+      font-weight: 500; transition: color .2s;
     }
     .nav-links a:hover { color: var(--text); }
+    .nav-dl {
+      background: var(--purple);
+      color: #fff !important;
+      padding: 8px 18px;
+      border-radius: 8px;
+      font-size: 13px !important;
+      font-weight: 600 !important;
+      transition: background .2s, transform .15s !important;
+    }
+    .nav-dl:hover { background: #6d28d9 !important; transform: translateY(-1px); }
 
     /* ── Hero ── */
     .hero {
       min-height: 100vh;
-      display: flex; flex-direction: column; align-items: center; justify-content: center;
-      padding: 100px 20px 60px;
+      display: flex; flex-direction: column;
+      align-items: center; justify-content: center;
+      padding: 120px 24px 80px;
       text-align: center;
-      background: radial-gradient(ellipse 80% 60% at 50% 0%, rgba(124,58,237,0.2) 0%, transparent 70%);
+      background: linear-gradient(180deg, #ffffff 0%, #f9f7ff 100%);
+      position: relative; overflow: hidden;
+    }
+    .hero::before {
+      content: '';
+      position: absolute; top: -200px; left: 50%; transform: translateX(-50%);
+      width: 800px; height: 800px;
+      background: radial-gradient(ellipse, rgba(167,139,250,0.12) 0%, transparent 70%);
+      pointer-events: none;
+    }
+    .hero-badge {
+      display: inline-flex; align-items: center; gap: 6px;
+      background: var(--purple-bg);
+      color: var(--purple);
+      font-size: 13px; font-weight: 500;
+      padding: 6px 14px; border-radius: 20px;
+      margin-bottom: 28px;
+      border: 1px solid rgba(124,58,237,0.15);
     }
     .hero-icon {
-      width: 96px; height: 96px; border-radius: 22px;
-      box-shadow: 0 0 60px rgba(124,58,237,0.5);
+      width: 100px; height: 100px; border-radius: 24px;
+      box-shadow: 0 20px 60px rgba(124,58,237,0.25),
+                  0 4px 16px rgba(0,0,0,0.08);
       margin-bottom: 32px;
     }
     .hero h1 {
-      font-size: clamp(36px, 6vw, 64px);
-      font-weight: 700; letter-spacing: -1px;
-      background: linear-gradient(135deg, #fff 30%, var(--accent));
+      font-size: clamp(40px, 6vw, 72px);
+      font-weight: 800; letter-spacing: -2px; line-height: 1.1;
+      color: var(--text);
+      margin-bottom: 20px;
+    }
+    .hero h1 span {
+      background: linear-gradient(135deg, var(--purple) 0%, var(--purple-lt) 100%);
       -webkit-background-clip: text; -webkit-text-fill-color: transparent;
-      margin-bottom: 16px;
     }
     .hero p {
-      font-size: clamp(15px, 2vw, 18px);
-      color: var(--text2); max-width: 520px; margin: 0 auto 40px;
+      font-size: clamp(16px, 2vw, 19px);
+      color: var(--text2); max-width: 500px;
+      margin: 0 auto 40px; line-height: 1.7;
     }
     .hero-btns { display: flex; gap: 12px; flex-wrap: wrap; justify-content: center; }
-
     .btn {
       display: inline-flex; align-items: center; gap: 8px;
-      padding: 12px 28px; border-radius: 10px;
+      padding: 14px 28px; border-radius: 12px;
       font-size: 15px; font-weight: 600; text-decoration: none;
       transition: transform .15s, box-shadow .15s;
       cursor: pointer;
     }
     .btn:hover { transform: translateY(-2px); }
     .btn-primary {
-      background: linear-gradient(135deg, var(--accent2), var(--accent));
+      background: var(--purple);
       color: #fff;
-      box-shadow: 0 4px 24px rgba(124,58,237,0.45);
+      box-shadow: 0 4px 20px rgba(124,58,237,0.35);
     }
-    .btn-primary:hover { box-shadow: 0 8px 32px rgba(124,58,237,0.6); }
+    .btn-primary:hover { box-shadow: 0 8px 32px rgba(124,58,237,0.45); background: #6d28d9; }
     .btn-secondary {
-      background: var(--glass);
+      background: var(--bg);
       border: 1px solid var(--border);
       color: var(--text);
+      box-shadow: 0 1px 4px rgba(0,0,0,0.06);
     }
-    .btn-secondary:hover { background: rgba(255,255,255,0.1); }
+    .btn-secondary:hover { background: var(--bg2); }
 
-    /* ── Section共用 ── */
-    section { padding: 80px 20px; }
-    .container { max-width: 1000px; margin: 0 auto; }
+    /* Hero stats */
+    .hero-stats {
+      display: flex; gap: 40px; margin-top: 56px;
+      flex-wrap: wrap; justify-content: center;
+    }
+    .stat { text-align: center; }
+    .stat-num {
+      font-size: 28px; font-weight: 800; color: var(--text);
+      letter-spacing: -1px;
+    }
+    .stat-num span { color: var(--purple); }
+    .stat-label { font-size: 13px; color: var(--text3); margin-top: 2px; }
+
+    /* ── Section 共用 ── */
+    section { padding: 96px 24px; }
+    .container { max-width: 1040px; margin: 0 auto; }
+    .section-eyebrow {
+      text-align: center;
+      font-size: 13px; font-weight: 600; letter-spacing: 0.5px;
+      color: var(--purple); text-transform: uppercase;
+      margin-bottom: 12px;
+    }
     .section-title {
-      font-size: clamp(24px, 4vw, 36px); font-weight: 700;
-      text-align: center; margin-bottom: 12px;
+      font-size: clamp(28px, 4vw, 42px); font-weight: 800;
+      text-align: center; margin-bottom: 14px;
+      letter-spacing: -1px; color: var(--text);
     }
     .section-sub {
-      color: var(--text2); text-align: center; margin-bottom: 48px;
-      font-size: 15px;
+      color: var(--text2); text-align: center; margin-bottom: 56px;
+      font-size: 16px; max-width: 480px; margin-left: auto; margin-right: auto;
     }
 
     /* ── Features ── */
     #features { background: var(--bg2); }
     .features-grid {
       display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
-      gap: 16px;
+      grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+      gap: 20px;
     }
     .feature-card {
-      background: var(--glass);
+      background: var(--bg);
       border: 1px solid var(--border);
-      border-radius: 14px;
-      padding: 24px;
-      transition: border-color .2s, transform .2s;
+      border-radius: 16px;
+      padding: 28px;
+      transition: border-color .2s, transform .2s, box-shadow .2s;
     }
     .feature-card:hover {
-      border-color: rgba(167,139,250,0.3);
-      transform: translateY(-3px);
+      border-color: rgba(124,58,237,0.25);
+      transform: translateY(-4px);
+      box-shadow: 0 12px 40px rgba(0,0,0,0.06);
     }
-    .feature-icon {
-      font-size: 28px; margin-bottom: 14px;
-      display: block;
+    .feature-icon-wrap {
+      width: 44px; height: 44px;
+      background: var(--purple-bg);
+      border-radius: 12px;
+      display: flex; align-items: center; justify-content: center;
+      font-size: 22px; margin-bottom: 16px;
     }
-    .feature-card h3 { font-size: 16px; font-weight: 600; margin-bottom: 8px; }
-    .feature-card p { font-size: 14px; color: var(--text2); line-height: 1.7; }
+    .feature-card h3 {
+      font-size: 16px; font-weight: 700; margin-bottom: 8px;
+      color: var(--text); letter-spacing: -0.3px;
+    }
+    .feature-card p { font-size: 14px; color: var(--text2); line-height: 1.75; }
 
     /* ── Download ── */
-    #download {
-      background: radial-gradient(ellipse 80% 80% at 50% 100%, rgba(124,58,237,0.15) 0%, transparent 70%);
-    }
+    #download { background: var(--bg); }
     .download-grid {
       display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-      gap: 16px;
-      margin-bottom: 24px;
+      grid-template-columns: repeat(auto-fit, minmax(210px, 1fr));
+      gap: 16px; margin-bottom: 28px;
     }
     .dl-card {
-      background: var(--glass);
-      border: 1px solid var(--border);
-      border-radius: 14px;
-      padding: 24px 20px;
+      background: var(--bg2);
+      border: 1.5px solid var(--border);
+      border-radius: 16px;
+      padding: 28px 20px;
       text-align: center;
       text-decoration: none;
       color: var(--text);
@@ -157,40 +227,75 @@
       display: flex; flex-direction: column; align-items: center; gap: 10px;
     }
     .dl-card:hover {
-      border-color: var(--accent);
-      transform: translateY(-3px);
-      box-shadow: 0 8px 32px rgba(124,58,237,0.2);
+      border-color: var(--purple);
+      transform: translateY(-4px);
+      box-shadow: 0 12px 40px rgba(124,58,237,0.12);
     }
-    .dl-card .dl-icon { font-size: 32px; }
-    .dl-card .dl-platform { font-weight: 600; font-size: 15px; }
-    .dl-card .dl-desc { font-size: 12px; color: var(--text2); }
-    .dl-card .dl-badge {
-      font-size: 11px; background: rgba(124,58,237,0.25);
-      color: var(--accent); padding: 2px 8px; border-radius: 20px;
+    .dl-icon {
+      font-size: 36px;
+      width: 60px; height: 60px;
+      background: var(--purple-bg);
+      border-radius: 14px;
+      display: flex; align-items: center; justify-content: center;
+    }
+    .dl-platform { font-weight: 700; font-size: 15px; color: var(--text); }
+    .dl-desc { font-size: 12px; color: var(--text3); }
+    .dl-badge {
+      font-size: 11px; font-weight: 600;
+      background: var(--purple-bg);
+      color: var(--purple); padding: 3px 10px; border-radius: 20px;
     }
     .dl-note {
-      text-align: center; color: var(--text2); font-size: 13px; margin-top: 8px;
+      text-align: center; color: var(--text3); font-size: 13px; margin-top: 4px;
     }
-    .dl-note a { color: var(--accent); text-decoration: none; }
-    .dl-note a:hover { text-decoration: underline; }
+
+    /* ── CTA Banner ── */
+    .cta-banner {
+      background: linear-gradient(135deg, var(--purple) 0%, var(--purple-lt) 100%);
+      border-radius: 24px;
+      padding: 56px 40px;
+      text-align: center;
+      color: #fff;
+      margin: 0 auto;
+      max-width: 760px;
+    }
+    .cta-banner h2 {
+      font-size: clamp(24px, 4vw, 36px); font-weight: 800;
+      letter-spacing: -1px; margin-bottom: 12px;
+    }
+    .cta-banner p { font-size: 16px; opacity: 0.85; margin-bottom: 28px; }
+    .btn-white {
+      background: #fff; color: var(--purple);
+      padding: 14px 32px; border-radius: 12px;
+      font-size: 15px; font-weight: 700;
+      text-decoration: none; display: inline-block;
+      transition: transform .15s, box-shadow .15s;
+      box-shadow: 0 4px 20px rgba(0,0,0,0.15);
+    }
+    .btn-white:hover { transform: translateY(-2px); box-shadow: 0 8px 32px rgba(0,0,0,0.2); }
 
     /* ── Footer ── */
     footer {
       background: var(--bg2);
       border-top: 1px solid var(--border);
-      padding: 32px 20px;
+      padding: 36px 24px;
       text-align: center;
-      color: var(--text2);
+      color: var(--text3);
       font-size: 13px;
     }
-    footer a { color: var(--accent); text-decoration: none; }
-    footer a:hover { text-decoration: underline; }
+    footer .footer-logo {
+      display: flex; align-items: center; justify-content: center; gap: 8px;
+      margin-bottom: 12px;
+    }
+    footer .footer-logo img { width: 24px; height: 24px; border-radius: 6px; }
+    footer .footer-logo span { font-weight: 700; color: var(--text2); font-size: 14px; }
 
     /* ── Responsive ── */
-    @media (max-width: 600px) {
+    @media (max-width: 640px) {
       nav { padding: 0 20px; }
       .nav-links { gap: 20px; }
-      .hero-btns { flex-direction: column; align-items: center; }
+      .hero-stats { gap: 24px; }
+      .cta-banner { padding: 40px 24px; border-radius: 16px; }
     }
   </style>
 </head>
@@ -205,56 +310,72 @@
   <div class="nav-links">
     <a href="#features">功能</a>
     <a href="#download">下载</a>
+    <a class="nav-dl" href="#download">免费下载</a>
   </div>
 </nav>
 
 <!-- Hero -->
 <section class="hero">
+  <div class="hero-badge">🎬 专业录屏工具</div>
   <img class="hero-icon" src="icon.png" alt="诺娃剪辑图标">
-  <h1>诺娃剪辑</h1>
-  <p>简洁、强大的桌面录屏工具。全屏、区域、窗口三种模式，画中画摄像头叠加，一键开始录制。</p>
+  <h1>录制你的<br><span>每一个精彩瞬间</span></h1>
+  <p>全屏、区域、窗口三种模式，画中画摄像头叠加，双路音频混合，一键开始录制。</p>
   <div class="hero-btns">
-    <a class="btn btn-primary" href="#download">
-      ⬇ 立即下载
-    </a>
+    <a class="btn btn-primary" href="#download">⬇ 立即下载</a>
+    <a class="btn btn-secondary" href="#features">了解功能 →</a>
+  </div>
+  <div class="hero-stats">
+    <div class="stat">
+      <div class="stat-num">3<span>种</span></div>
+      <div class="stat-label">录制模式</div>
+    </div>
+    <div class="stat">
+      <div class="stat-num">3<span>大</span></div>
+      <div class="stat-label">支持平台</div>
+    </div>
+    <div class="stat">
+      <div class="stat-num">0<span>元</span></div>
+      <div class="stat-label">完全免费</div>
+    </div>
   </div>
 </section>
 
 <!-- Features -->
 <section id="features">
   <div class="container">
-    <h2 class="section-title">核心功能</h2>
-    <p class="section-sub">专为高效录屏而设计，简单上手，功能完备</p>
+    <p class="section-eyebrow">核心功能</p>
+    <h2 class="section-title">专为高效录屏而生</h2>
+    <p class="section-sub">简单上手，功能完备，满足从教学演示到内容创作的一切需求</p>
     <div class="features-grid">
       <div class="feature-card">
-        <span class="feature-icon">🖥</span>
+        <div class="feature-icon-wrap">🖥</div>
         <h3>三种录制模式</h3>
-        <p>全屏录制、拖选区域、指定窗口。窗口模式自动跟踪目标窗口的移动和缩放。</p>
+        <p>全屏录制、拖选区域、指定窗口。窗口模式自动跟踪目标窗口的移动和缩放，无需手动调整。</p>
       </div>
       <div class="feature-card">
-        <span class="feature-icon">📷</span>
+        <div class="feature-icon-wrap">📷</div>
         <h3>画中画摄像头</h3>
-        <p>摄像头实时叠加在录屏画面上，支持矩形和圆形两种样式，可自由拖动调整位置。</p>
+        <p>摄像头实时叠加在录屏画面上，支持矩形和圆形两种样式，可自由拖动调整位置和大小。</p>
       </div>
       <div class="feature-card">
-        <span class="feature-icon">🎙</span>
+        <div class="feature-icon-wrap">🎙</div>
         <h3>双路音频混合</h3>
-        <p>系统声音与麦克风独立控制音量，支持双路混合录制，满足讲解视频需求。</p>
+        <p>系统声音与麦克风独立控制音量，支持双路混合录制，完美满足讲解视频和教学需求。</p>
       </div>
       <div class="feature-card">
-        <span class="feature-icon">⏱</span>
-        <h3>定时功能</h3>
-        <p>支持延迟开始倒计时和自动停止计时器，让录制更从容。</p>
+        <div class="feature-icon-wrap">⏱</div>
+        <h3>智能定时功能</h3>
+        <p>支持延迟开始倒计时和自动停止计时器，提前设置好，从容准备，无需盯着屏幕等待。</p>
       </div>
       <div class="feature-card">
-        <span class="feature-icon">⌨️</span>
+        <div class="feature-icon-wrap">⌨️</div>
         <h3>全局快捷键</h3>
-        <p>Ctrl+Alt+R 开始，Ctrl+Alt+S 停止，无需切换窗口即可控制录制。</p>
+        <p>Ctrl+Alt+R 开始，Ctrl+Alt+S 停止，无需切换窗口即可控制录制，专注于你的内容。</p>
       </div>
       <div class="feature-card">
-        <span class="feature-icon">🎨</span>
-        <h3>精致界面</h3>
-        <p>紫色渐变浮窗设计，始终置顶不遮挡内容。录制时自动隐藏，角落显示迷你指示条。</p>
+        <div class="feature-icon-wrap">✨</div>
+        <h3>精致录制体验</h3>
+        <p>录制时主界面自动隐藏，屏幕角落显示紫色迷你指示条，实时显示计时，一键停止。</p>
       </div>
     </div>
   </div>
@@ -263,27 +384,28 @@
 <!-- Download -->
 <section id="download">
   <div class="container">
-    <h2 class="section-title">下载</h2>
-    <p class="section-sub">支持 Windows、macOS、Linux 三大平台</p>
+    <p class="section-eyebrow">立即下载</p>
+    <h2 class="section-title">选择你的平台</h2>
+    <p class="section-sub">支持 Windows、macOS、Linux，当前版本随软件更新自动同步</p>
     <div class="download-grid">
-      <a class="dl-card" href="https://sameul.github.io/novacut/releases/诺娃剪辑-Setup.exe">
-        <span class="dl-icon">🪟</span>
+      <a class="dl-card" href="releases/诺娃剪辑-Setup.exe">
+        <div class="dl-icon">🪟</div>
         <span class="dl-platform">Windows</span>
         <span class="dl-badge">推荐</span>
         <span class="dl-desc">安装包，含桌面快捷方式</span>
       </a>
-      <a class="dl-card" href="https://sameul.github.io/novacut/releases/诺娃剪辑-Windows.exe">
-        <span class="dl-icon">📦</span>
+      <a class="dl-card" href="releases/诺娃剪辑-Windows.exe">
+        <div class="dl-icon">📦</div>
         <span class="dl-platform">Windows 便携版</span>
         <span class="dl-desc">无需安装，直接运行</span>
       </a>
-      <a class="dl-card" href="https://sameul.github.io/novacut/releases/诺娃剪辑-macOS">
-        <span class="dl-icon">🍎</span>
+      <a class="dl-card" href="releases/诺娃剪辑-macOS">
+        <div class="dl-icon">🍎</div>
         <span class="dl-platform">macOS</span>
         <span class="dl-desc">Intel / Apple Silicon</span>
       </a>
-      <a class="dl-card" href="https://sameul.github.io/novacut/releases/诺娃剪辑-Linux">
-        <span class="dl-icon">🐧</span>
+      <a class="dl-card" href="releases/诺娃剪辑-Linux">
+        <div class="dl-icon">🐧</div>
         <span class="dl-platform">Linux</span>
         <span class="dl-desc">x86_64</span>
       </a>
@@ -292,8 +414,21 @@
   </div>
 </section>
 
+<!-- CTA -->
+<section style="padding: 80px 24px; background: var(--bg2);">
+  <div class="cta-banner">
+    <h2>立即开始录制</h2>
+    <p>免费下载，无需注册，开箱即用</p>
+    <a class="btn-white" href="#download">⬇ 免费下载</a>
+  </div>
+</section>
+
 <!-- Footer -->
 <footer>
+  <div class="footer-logo">
+    <img src="icon.png" alt="诺娃剪辑">
+    <span>诺娃剪辑</span>
+  </div>
   <p>© 2026 诺娃剪辑 · 保留所有权利</p>
 </footer>
 
