@@ -1,0 +1,308 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>诺娃剪辑 — 简洁强大的录屏工具</title>
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --bg:        #0f0f1a;
+      --bg2:       #1a1a2e;
+      --bg3:       #2d1b4e;
+      --accent:    #a78bfa;
+      --accent2:   #7c3aed;
+      --text:      #e2e8f0;
+      --text2:     #9ca3af;
+      --border:    rgba(255,255,255,0.08);
+      --glass:     rgba(255,255,255,0.05);
+    }
+
+    html { scroll-behavior: smooth; }
+
+    body {
+      background: var(--bg);
+      color: var(--text);
+      font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
+      line-height: 1.6;
+      overflow-x: hidden;
+    }
+
+    /* ── Nav ── */
+    nav {
+      position: fixed; top: 0; left: 0; right: 0; z-index: 100;
+      display: flex; align-items: center; justify-content: space-between;
+      padding: 0 40px; height: 60px;
+      background: rgba(15,15,26,0.85);
+      backdrop-filter: blur(20px);
+      border-bottom: 1px solid var(--border);
+    }
+    .nav-logo {
+      display: flex; align-items: center; gap: 10px;
+      font-size: 16px; font-weight: 600; color: var(--accent);
+      text-decoration: none;
+    }
+    .nav-logo img { width: 28px; height: 28px; border-radius: 6px; }
+    .nav-links { display: flex; gap: 32px; }
+    .nav-links a {
+      color: var(--text2); text-decoration: none; font-size: 14px;
+      transition: color .2s;
+    }
+    .nav-links a:hover { color: var(--text); }
+
+    /* ── Hero ── */
+    .hero {
+      min-height: 100vh;
+      display: flex; flex-direction: column; align-items: center; justify-content: center;
+      padding: 100px 20px 60px;
+      text-align: center;
+      background: radial-gradient(ellipse 80% 60% at 50% 0%, rgba(124,58,237,0.2) 0%, transparent 70%);
+    }
+    .hero-icon {
+      width: 96px; height: 96px; border-radius: 22px;
+      box-shadow: 0 0 60px rgba(124,58,237,0.5);
+      margin-bottom: 32px;
+    }
+    .hero h1 {
+      font-size: clamp(36px, 6vw, 64px);
+      font-weight: 700; letter-spacing: -1px;
+      background: linear-gradient(135deg, #fff 30%, var(--accent));
+      -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+      margin-bottom: 16px;
+    }
+    .hero p {
+      font-size: clamp(15px, 2vw, 18px);
+      color: var(--text2); max-width: 520px; margin: 0 auto 40px;
+    }
+    .hero-btns { display: flex; gap: 12px; flex-wrap: wrap; justify-content: center; }
+
+    .btn {
+      display: inline-flex; align-items: center; gap: 8px;
+      padding: 12px 28px; border-radius: 10px;
+      font-size: 15px; font-weight: 600; text-decoration: none;
+      transition: transform .15s, box-shadow .15s;
+      cursor: pointer;
+    }
+    .btn:hover { transform: translateY(-2px); }
+    .btn-primary {
+      background: linear-gradient(135deg, var(--accent2), var(--accent));
+      color: #fff;
+      box-shadow: 0 4px 24px rgba(124,58,237,0.45);
+    }
+    .btn-primary:hover { box-shadow: 0 8px 32px rgba(124,58,237,0.6); }
+    .btn-secondary {
+      background: var(--glass);
+      border: 1px solid var(--border);
+      color: var(--text);
+    }
+    .btn-secondary:hover { background: rgba(255,255,255,0.1); }
+
+    /* ── Section共用 ── */
+    section { padding: 80px 20px; }
+    .container { max-width: 1000px; margin: 0 auto; }
+    .section-title {
+      font-size: clamp(24px, 4vw, 36px); font-weight: 700;
+      text-align: center; margin-bottom: 12px;
+    }
+    .section-sub {
+      color: var(--text2); text-align: center; margin-bottom: 48px;
+      font-size: 15px;
+    }
+
+    /* ── Features ── */
+    #features { background: var(--bg2); }
+    .features-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+      gap: 16px;
+    }
+    .feature-card {
+      background: var(--glass);
+      border: 1px solid var(--border);
+      border-radius: 14px;
+      padding: 24px;
+      transition: border-color .2s, transform .2s;
+    }
+    .feature-card:hover {
+      border-color: rgba(167,139,250,0.3);
+      transform: translateY(-3px);
+    }
+    .feature-icon {
+      font-size: 28px; margin-bottom: 14px;
+      display: block;
+    }
+    .feature-card h3 { font-size: 16px; font-weight: 600; margin-bottom: 8px; }
+    .feature-card p { font-size: 14px; color: var(--text2); line-height: 1.7; }
+
+    /* ── Download ── */
+    #download {
+      background: radial-gradient(ellipse 80% 80% at 50% 100%, rgba(124,58,237,0.15) 0%, transparent 70%);
+    }
+    .download-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+      gap: 16px;
+      margin-bottom: 24px;
+    }
+    .dl-card {
+      background: var(--glass);
+      border: 1px solid var(--border);
+      border-radius: 14px;
+      padding: 24px 20px;
+      text-align: center;
+      text-decoration: none;
+      color: var(--text);
+      transition: border-color .2s, transform .2s, box-shadow .2s;
+      display: flex; flex-direction: column; align-items: center; gap: 10px;
+    }
+    .dl-card:hover {
+      border-color: var(--accent);
+      transform: translateY(-3px);
+      box-shadow: 0 8px 32px rgba(124,58,237,0.2);
+    }
+    .dl-card .dl-icon { font-size: 32px; }
+    .dl-card .dl-platform { font-weight: 600; font-size: 15px; }
+    .dl-card .dl-desc { font-size: 12px; color: var(--text2); }
+    .dl-card .dl-badge {
+      font-size: 11px; background: rgba(124,58,237,0.25);
+      color: var(--accent); padding: 2px 8px; border-radius: 20px;
+    }
+    .dl-note {
+      text-align: center; color: var(--text2); font-size: 13px; margin-top: 8px;
+    }
+    .dl-note a { color: var(--accent); text-decoration: none; }
+    .dl-note a:hover { text-decoration: underline; }
+
+    /* ── Footer ── */
+    footer {
+      background: var(--bg2);
+      border-top: 1px solid var(--border);
+      padding: 32px 20px;
+      text-align: center;
+      color: var(--text2);
+      font-size: 13px;
+    }
+    footer a { color: var(--accent); text-decoration: none; }
+    footer a:hover { text-decoration: underline; }
+
+    /* ── Responsive ── */
+    @media (max-width: 600px) {
+      nav { padding: 0 20px; }
+      .nav-links { gap: 20px; }
+      .hero-btns { flex-direction: column; align-items: center; }
+    }
+  </style>
+</head>
+<body>
+
+<!-- Nav -->
+<nav>
+  <a class="nav-logo" href="#">
+    <img src="icon.png" alt="诺娃剪辑">
+    诺娃剪辑
+  </a>
+  <div class="nav-links">
+    <a href="#features">功能</a>
+    <a href="#download">下载</a>
+    <a href="https://github.com/sameul/ScreenRecorder" target="_blank">GitHub</a>
+  </div>
+</nav>
+
+<!-- Hero -->
+<section class="hero">
+  <img class="hero-icon" src="icon.png" alt="诺娃剪辑图标">
+  <h1>诺娃剪辑</h1>
+  <p>简洁、强大的桌面录屏工具。全屏、区域、窗口三种模式，画中画摄像头叠加，一键开始录制。</p>
+  <div class="hero-btns">
+    <a class="btn btn-primary" href="#download">
+      ⬇ 立即下载
+    </a>
+    <a class="btn btn-secondary" href="https://github.com/sameul/ScreenRecorder" target="_blank">
+      ★ GitHub
+    </a>
+  </div>
+</section>
+
+<!-- Features -->
+<section id="features">
+  <div class="container">
+    <h2 class="section-title">核心功能</h2>
+    <p class="section-sub">专为高效录屏而设计，简单上手，功能完备</p>
+    <div class="features-grid">
+      <div class="feature-card">
+        <span class="feature-icon">🖥</span>
+        <h3>三种录制模式</h3>
+        <p>全屏录制、拖选区域、指定窗口。窗口模式自动跟踪目标窗口的移动和缩放。</p>
+      </div>
+      <div class="feature-card">
+        <span class="feature-icon">📷</span>
+        <h3>画中画摄像头</h3>
+        <p>摄像头实时叠加在录屏画面上，支持矩形和圆形两种样式，可自由拖动调整位置。</p>
+      </div>
+      <div class="feature-card">
+        <span class="feature-icon">🎙</span>
+        <h3>双路音频混合</h3>
+        <p>系统声音与麦克风独立控制音量，支持双路混合录制，满足讲解视频需求。</p>
+      </div>
+      <div class="feature-card">
+        <span class="feature-icon">⏱</span>
+        <h3>定时功能</h3>
+        <p>支持延迟开始倒计时和自动停止计时器，让录制更从容。</p>
+      </div>
+      <div class="feature-card">
+        <span class="feature-icon">⌨️</span>
+        <h3>全局快捷键</h3>
+        <p>Ctrl+Alt+R 开始，Ctrl+Alt+S 停止，无需切换窗口即可控制录制。</p>
+      </div>
+      <div class="feature-card">
+        <span class="feature-icon">🎨</span>
+        <h3>精致界面</h3>
+        <p>紫色渐变浮窗设计，始终置顶不遮挡内容。录制时自动隐藏，角落显示迷你指示条。</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- Download -->
+<section id="download">
+  <div class="container">
+    <h2 class="section-title">下载</h2>
+    <p class="section-sub">支持 Windows、macOS、Linux 三大平台，免费开源</p>
+    <div class="download-grid">
+      <a class="dl-card" href="https://github.com/sameul/ScreenRecorder/releases/latest/download/诺娃剪辑-Setup.exe">
+        <span class="dl-icon">🪟</span>
+        <span class="dl-platform">Windows</span>
+        <span class="dl-badge">推荐</span>
+        <span class="dl-desc">安装包，含桌面快捷方式</span>
+      </a>
+      <a class="dl-card" href="https://github.com/sameul/ScreenRecorder/releases/latest/download/诺娃剪辑-Windows.exe">
+        <span class="dl-icon">📦</span>
+        <span class="dl-platform">Windows 便携版</span>
+        <span class="dl-desc">无需安装，直接运行</span>
+      </a>
+      <a class="dl-card" href="https://github.com/sameul/ScreenRecorder/releases/latest/download/诺娃剪辑-macOS">
+        <span class="dl-icon">🍎</span>
+        <span class="dl-platform">macOS</span>
+        <span class="dl-desc">Intel / Apple Silicon</span>
+      </a>
+      <a class="dl-card" href="https://github.com/sameul/ScreenRecorder/releases/latest/download/诺娃剪辑-Linux">
+        <span class="dl-icon">🐧</span>
+        <span class="dl-platform">Linux</span>
+        <span class="dl-desc">x86_64</span>
+      </a>
+    </div>
+    <p class="dl-note">
+      查看所有版本：<a href="https://github.com/sameul/ScreenRecorder/releases" target="_blank">GitHub Releases</a>
+      &nbsp;·&nbsp; 开源地址：<a href="https://github.com/sameul/ScreenRecorder" target="_blank">github.com/sameul/ScreenRecorder</a>
+    </p>
+  </div>
+</section>
+
+<!-- Footer -->
+<footer>
+  <p>© 2026 诺娃剪辑 · 基于 <a href="https://github.com/sameul/ScreenRecorder/blob/main/LICENSE" target="_blank">MIT 协议</a> 开源</p>
+</footer>
+
+</body>
+</html>
